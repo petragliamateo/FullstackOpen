@@ -15,12 +15,17 @@ const App = () => {
         <button onClick={() => setBad((prev) => prev + 1)}>bad</button>
       </div>
       <h1>statistics</h1>
-      <div>
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-        <Statistics good={good} neutral={neutral} bad={bad} />
-      </div>
+      {good || neutral || bad ? (
+        <div>
+          <p>good {good}</p>
+          <p>neutral {neutral}</p>
+          <p>bad {bad}</p>
+          <Statistics good={good} neutral={neutral} bad={bad} />
+        </div>        
+      ) : (
+        <p>No feedback given</p>
+      )}
+
     </div>
   );
 }
