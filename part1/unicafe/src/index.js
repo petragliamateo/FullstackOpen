@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 
 const App = () => {
   const [good, setGood] = useState(0);
@@ -26,17 +26,24 @@ const Statistics = ({ good, neutral, bad, text, value }) => {
   const averange = (good - bad) / (total);
   const positive = `${(good / total) * 100} %`;
   if (text || value){
-    return <p>{text} {value}</p>
+    return (
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
+    )
   }
   return (
-    <div>
-      <Statistics text={'good'} value={good}/>
-      <Statistics text={'neutral'} value={neutral}/>
-      <Statistics text={'bad'} value={bad}/>
-      <Statistics text={'total'} value={total}/>
-      <Statistics text={'averange'} value={averange}/>
-      <Statistics text={'positive'} value={positive}/>      
-    </div>
+    <table>
+      <tbody>
+        <Statistics text={'good'} value={good}/>
+        <Statistics text={'neutral'} value={neutral}/>
+        <Statistics text={'bad'} value={bad}/>
+        <Statistics text={'total'} value={total}/>
+        <Statistics text={'averange'} value={averange}/>
+        <Statistics text={'positive'} value={positive}/>     
+      </tbody> 
+    </table>
   );
 }
 
@@ -53,6 +60,4 @@ const Button = ({ text, setValue, setGood, setBad, setNeutral }) => {
   );
 }
 
-ReactDOM.render(<App />, 
-  document.getElementById('root')
-);
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
