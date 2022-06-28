@@ -8,12 +8,15 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(event.target.name.value);
-    setPersons((prev) => prev.concat({ name: event.target.name.value }));
+    let isUsed = false;
+    persons.forEach((item) => item.name === newName ? isUsed = true : null );
+    if (isUsed) {
+      window.alert(`${newName} is alredy added to phonebook`);
+      return;
+    }
+    setPersons((prev) => prev.concat({ name: newName }));
     setNewName('');
   }
-  console.log(newName);
-  console.log(persons);
 
   return (
     <div>
