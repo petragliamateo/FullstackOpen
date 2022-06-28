@@ -10,8 +10,11 @@ const Part = ({ part }) =>
 const Content = ({ parts }) => parts.map((part) => <Part key={part.id} part={part} />)
 
 export const Course = ({ course }) => {
-  let sum = 0;
-  course.parts.forEach((part) => sum += part.exercises)
+  const sum = course.parts.reduce((previus, current) => {
+    const currentValue = current.exercises;
+    const previusValue = previus.exercises ? previus.exercises : previus;
+    return previusValue + currentValue;
+  })
 
   return (
     <div>
