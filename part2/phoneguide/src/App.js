@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { getAll, postData } from './services/personService';
+import { getAll, postData, deleteData, updateData } from './services/personService';
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -10,13 +9,22 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let isUsed = false;
-    persons.forEach((item) => item.name === newName ? isUsed = true : null );
-    if (isUsed) {
-      window.alert(`${newName} is alredy added to phonebook`);
+    const newPerson = { name: newName, number: newPhone }
+    let usedId = null;
+    persons.forEach((item) => item.name === newName ? usedId = item.id : null );
+    if (usedId) {
+      if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)){
+        updateData(usedId, newPerson)
+          .then((data) => {
+            setPersons((prev) => (
+              prev.map((p) => p.id === usedId ? data : p
+            )));
+            setNewName('');
+            setNewPhone('');
+          })
+      }
       return;
     }
-    const newPerson = { name: newName, number: newPhone }
     postData(newPerson)
       .then((data) => {
         setPersons((prev) => prev.concat(data));
@@ -27,7 +35,7 @@ const App = () => {
 
   const handleDelete = ({ name, id }) => {
     if (window.confirm(`delete ${name}?`)) {
-      axios.delete(`http://localhost:3001/persons/${id}`)
+      deleteData(id)
         .then(() => {
           setPersons((prev) => prev.filter((p) => p.id !== id));
         })
