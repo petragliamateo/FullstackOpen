@@ -25,6 +25,15 @@ const App = () => {
       })
   }
 
+  const handleDelete = ({ name, id }) => {
+    if (window.confirm(`delete ${name}?`)) {
+      axios.delete(`http://localhost:3001/persons/${id}`)
+        .then(() => {
+          setPersons((prev) => prev.filter((p) => p.id !== id));
+        })
+    }
+  }
+
   useEffect(() => {
     getAll().then((data) => setPersons(data))
   }, [])
@@ -48,7 +57,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
     </div>
   )
 }
@@ -92,10 +101,13 @@ const PersonForm = ({ handleSubmit, newName, setNewName, newPhone, setNewPhone }
   )
 }
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
   return (
     persons.map((person) => person.name.toLowerCase().includes(filter.toLowerCase()) ? (
-      <p key={person.name}>{person.name} {person.number}</p>
+      <div key={person.name}>
+        <p>{person.name} {person.number}</p>
+        <button onClick={() => handleDelete(person)}>Delete</button>
+      </div>
     ) : null)
   )
 }
