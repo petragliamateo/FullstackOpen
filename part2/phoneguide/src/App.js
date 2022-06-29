@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getAll, postData, deleteData, updateData } from './services/personService';
+import './index.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('');
   const [ newPhone, setNewPhone ] = useState('');
   const [ filter, setFilter ] = useState('');
+  const [ notification, setNotification ] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,6 +23,8 @@ const App = () => {
             )));
             setNewName('');
             setNewPhone('');
+            setNotification(`Updated ${data.name}`);
+            setTimeout(() => setNotification(''), 5000)
           })
       }
       return;
@@ -30,6 +34,8 @@ const App = () => {
         setPersons((prev) => prev.concat(data));
         setNewName('');
         setNewPhone('');
+        setNotification(`Added ${data.name}`);
+        setTimeout(() => setNotification(''), 5000)
       })
   }
 
@@ -50,6 +56,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification msg={notification} />
       
       <Filter setFilter={setFilter} filter={filter} />
 
@@ -117,6 +125,17 @@ const Persons = ({ persons, filter, handleDelete }) => {
         <button onClick={() => handleDelete(person)}>Delete</button>
       </div>
     ) : null)
+  )
+}
+
+const Notification = ({ msg }) => {
+  if (!msg) {
+    return null;
+  }
+  return (
+    <div className='notification'>
+      {msg}
+    </div>
   )
 }
 
