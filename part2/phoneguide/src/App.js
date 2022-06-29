@@ -15,9 +15,13 @@ const App = () => {
       window.alert(`${newName} is alredy added to phonebook`);
       return;
     }
-    setPersons((prev) => prev.concat({ name: newName, number: newPhone }));
-    setNewName('');
-    setNewPhone('');
+    const newPerson = { name: newName, number: newPhone }
+    axios.post('http://localhost:3001/persons', newPerson)
+      .then((response) => {
+        setPersons((prev) => prev.concat(response.data));
+        setNewName('');
+        setNewPhone('');
+      })
   }
 
   useEffect(() => {
