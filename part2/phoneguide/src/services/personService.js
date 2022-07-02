@@ -9,7 +9,7 @@ const getAll = () => {
 
 const postData = (data) => {
   const response = axios.post(baseURL, data);
-  return response.then((res) => res.data);
+  return response;
 }
 
 const deleteData = (id) => {
@@ -18,7 +18,7 @@ const deleteData = (id) => {
 
 const updateData = (id, newData) => {
   const response = axios.put(`${baseURL}/${id}`, newData)
-  return response.then((res) => res.data);
+  return response;
 }
 
-export {getAll, postData, deleteData, updateData };
+export { getAll, postData, deleteData, updateData };

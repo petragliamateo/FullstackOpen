@@ -7,7 +7,10 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newPhone, setNewPhone ] = useState('');
   const [ filter, setFilter ] = useState('');
-  const [ notification, setNotification ] = useState('');
+  const [ notification, setNotification ] = useState({
+    msg: '',
+    isError: false,
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -17,25 +20,49 @@ const App = () => {
     if (usedId) {
       if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)){
         updateData(usedId, newPerson)
-          .then((data) => {
+          .then((res) => {
+            const data = res.data
             setPersons((prev) => (
               prev.map((p) => p.id === usedId ? data : p
             )));
             setNewName('');
             setNewPhone('');
-            setNotification(`Updated ${data.name}`);
-            setTimeout(() => setNotification(''), 5000)
+            setNotification(() => ({ isError: false, msg: `Updated ${data.name}` }));
+            setTimeout(() => setNotification((prev) => (
+                { ...prev, msg: '' }
+              )), 5000)
+          }).catch((error) => {
+            // Para poder usar el catch modifique personService para que retorne el response.
+            // Ademas admitir el update validator en mongoose.
+            console.log(error);
+            setNotification(() => (
+              { isError: true, msg: error.response.data.error }
+            ))
+            setTimeout(() => setNotification(() => (
+              { isError: false, msg: '' }
+            )), 5000)
           })
       }
       return;
     }
     postData(newPerson)
-      .then((data) => {
+      .then((res) => {
+        const data = res.data;
         setPersons((prev) => prev.concat(data));
         setNewName('');
         setNewPhone('');
-        setNotification(`Added ${data.name}`);
+        setNotification((prev) => ({ isError: false, msg: `Added ${data.name}` }));
         setTimeout(() => setNotification(''), 5000)
+      }).catch((error) => {
+        // error trae la respuesta
+        // Para poder usar el catch modifique personService para que retorne el response.
+        console.log(error);
+        setNotification(() => (
+          { isError: true, msg: error.response.data.error }
+        ))
+        setTimeout(() => setNotification(() => (
+          { isError: false, msg: '' }
+        )), 5000)
       })
   }
 
@@ -57,7 +84,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      <Notification msg={notification} />
+      <Notification msg={notification.msg} isError={notification.isError} />
       
       <Filter setFilter={setFilter} filter={filter} />
 
@@ -128,12 +155,12 @@ const Persons = ({ persons, filter, handleDelete }) => {
   )
 }
 
-const Notification = ({ msg }) => {
+const Notification = ({ msg, isError }) => {
   if (!msg) {
     return null;
   }
   return (
-    <div className='notification'>
+    <div className={isError ? 'notificationError' : 'notification'}>
       {msg}
     </div>
   )
