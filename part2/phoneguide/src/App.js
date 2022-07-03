@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAll, postData, deleteData, updateData } from './services/personService';
 import './index.css'
+import { Filter, PersonForm, Persons, Notification } from './components'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -101,67 +102,6 @@ const App = () => {
       <h3>Numbers</h3>
 
       <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
-    </div>
-  )
-}
-
-const Filter = ({ setFilter, filter }) => {
-  return (
-    <div>
-        filter shown with:
-        <input
-          onChange={({ target }) => setFilter(target.value)}
-          value={filter}
-          name='filter'
-        />
-      </div>
-  )
-}
-
-const PersonForm = ({ handleSubmit, newName, setNewName, newPhone, setNewPhone }) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        name:
-        <input
-          onChange={({ target }) => setNewName(target.value)}
-          value={newName}
-          name='name'
-        />
-      </div>
-      <div>
-        number:
-        <input
-          onChange={({ target }) => setNewPhone(target.value)}
-          value={newPhone}
-          name='phone'
-        />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Persons = ({ persons, filter, handleDelete }) => {
-  return (
-    persons.map((person) => person.name.toLowerCase().includes(filter.toLowerCase()) ? (
-      <div key={person.name}>
-        <p>{person.name} {person.number}</p>
-        <button onClick={() => handleDelete(person)}>Delete</button>
-      </div>
-    ) : null)
-  )
-}
-
-const Notification = ({ msg, isError }) => {
-  if (!msg) {
-    return null;
-  }
-  return (
-    <div className={isError ? 'notificationError' : 'notification'}>
-      {msg}
     </div>
   )
 }
