@@ -14,32 +14,40 @@ beforeEach(async () => {
   await Promise.all(promiseArray);
 });
 
-describe('Get && ID', () => {
-  test('HTTP GET test', async () => {
+describe('HTTP Request', () => {
+  test('GET test', async () => {
     const response = await api.get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/);
     expect(response.body).toHaveLength(initialBlogs.length);
   });
 
-  test('ID of all blogs exist?', async () => {
-    const response = await api.get('/api/blogs');
-    response.body.forEach((blog) => {
-      expect(blog.id).toBeDefined();
-    });
-  });
-});
-
-describe('Post', () => {
-  test('HTTP POST test', async () => {
+  test('POST test', async () => {
     const newBlog = { title: 'test', url: 'test', likes: 1 };
 
     await api.post('/api/blogs').send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const response = await api.get('api/blogs');
-    expect(response.body.length).toHaveLength(initialBlogs.length + 1);
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(initialBlogs.length + 1);
+  });
+});
+
+describe('Object props', () => {
+  test('ID of all blogs exist?', async () => {
+    const response = await api.get('/api/blogs');
+    response.body.forEach((blog) => {
+      expect(blog.id).toBeDefined();
+    });
+  });
+
+  test('if dont have likes prop, then is zero', async () => {
+    const blogWithoutLikes = { title: 'test', url: 'test' };
+    const result = await api.post('/api/blogs').send(blogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+    expect(result.body.likes).toBe(0);
   });
 });
 
