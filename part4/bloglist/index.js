@@ -1,6 +1,11 @@
+const http = require('http');
 const app = require('./app');
 const { PORT } = require('./utils/config');
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+const servidor = server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = servidor;
