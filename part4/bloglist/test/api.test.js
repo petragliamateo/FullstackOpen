@@ -34,6 +34,19 @@ describe('HTTP Request', () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(initialBlogs.length + 1);
   });
+
+  test('Delete test', async () => {
+    const blogs = await api.get('/api/blogs');
+    const randomIndex = Math.floor(Math.random() * blogs.body.length);
+    const randomBlog = blogs.body[randomIndex];
+
+    await api.delete(`/api/blogs/${randomBlog.id}`)
+      .expect(204);
+
+    const finalBlogs = await api.get('/api/blogs');
+    expect(finalBlogs.body).toHaveLength(blogs.body.length - 1);
+    expect(finalBlogs.body).not.toContain(randomBlog);
+  });
 });
 
 describe('Object props', () => {
