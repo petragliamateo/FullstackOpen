@@ -47,6 +47,20 @@ describe('HTTP Request', () => {
     expect(finalBlogs.body).toHaveLength(blogs.body.length - 1);
     expect(finalBlogs.body).not.toContain(randomBlog);
   });
+
+  test('PUT test', async () => {
+    const blogs = await api.get('/api/blogs');
+    const randomIndex = Math.floor(Math.random() * blogs.body.length);
+    const randomBlog = blogs.body[randomIndex];
+    const updateBlog = { ...randomBlog, title: 'updated', author: 'updated' };
+
+    await api.put(`/api/blogs/${randomBlog.id}`).send(updateBlog)
+      .expect(200);
+
+    const finalBlogs = await api.get('/api/blogs');
+    expect(finalBlogs.body[randomIndex].title).toBe('updated');
+    expect(finalBlogs.body[randomIndex].author).toBe('updated');
+  });
 });
 
 describe('Object props', () => {
@@ -69,6 +83,19 @@ describe('Object props', () => {
     const blogIncompleted = { author: 'test', likes: 0 };
     await api.post('/api/blogs').send(blogIncompleted)
       .expect(400);
+  });
+
+  test('like blog test', async () => {
+    const blogs = await api.get('/api/blogs');
+    const randomIndex = Math.floor(Math.random() * blogs.body.length);
+    const randomBlog = blogs.body[randomIndex];
+    const updateBlog = { ...randomBlog, likes: randomBlog.likes + 1 };
+
+    await api.put(`/api/blogs/${randomBlog.id}`).send(updateBlog)
+      .expect(200);
+
+    const finalBlogs = await api.get('/api/blogs');
+    expect(finalBlogs.body[randomIndex].likes).toBe(randomBlog.likes + 1);
   });
 });
 
