@@ -9,4 +9,17 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-module.exports = errorHandler;
+// Los middleware se ejecutan cada vez que se realiza una solicitud HTTP
+const tokenExtractor = (request, response, next) => {
+  // request.get('authorization') recoge el valor authorization de la solicitud post (post_blog)
+  const authorization = request.get('authorization');
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7);
+  }
+  next();
+};
+
+module.exports = {
+  errorHandler,
+  tokenExtractor,
+};
