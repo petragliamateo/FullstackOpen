@@ -3,8 +3,10 @@ const supertest = require('supertest');
 const app = require('../app');
 const initialBlogs = require('../utils/initialBlogs');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const api = supertest(app);
+let token = '';
 
 beforeEach(async () => {
   // La aplicación se ejecuta en modo de prueba --> La colección de la DB es tests
@@ -12,6 +14,19 @@ beforeEach(async () => {
   const blogObject = initialBlogs.map((b) => new Blog(b));
   const promiseArray = blogObject.map((blog) => blog.save());
   await Promise.all(promiseArray);
+
+  await User.deleteMany({});
+  const initUser = {
+    username: 'root',
+    name: 'First User',
+    password: '123456',
+  };
+  await api.post('/api/users').send(initUser);
+
+  const request = await api.post('/api/login')
+    .send({ username: 'root', password: '123456' })
+    .expect(200);
+  token = `Bearer ${request.body.token}`;
 });
 
 describe('HTTP Request', () => {
@@ -26,8 +41,9 @@ describe('HTTP Request', () => {
     const newBlog = {
       title: 'test', url: 'test', author: 'test', likes: 1,
     };
-
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', token)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -35,17 +51,35 @@ describe('HTTP Request', () => {
     expect(response.body).toHaveLength(initialBlogs.length + 1);
   });
 
-  test('Delete test', async () => {
+  test('Delete root blog', async () => {
+    // First post a root blog:
+    const newBlog = {
+      title: 'A root blog', url: 'test', author: 'root', likes: 0,
+    };
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', token);
+    // Get list of all blogs and delete roots blog
+    const blogs = await api.get('/api/blogs');
+    const rootBlog = blogs.body[blogs.body.length - 1];
+    // Delete roots blog
+    await api.delete(`/api/blogs/${rootBlog.id}`)
+      .set('Authorization', token)
+      .expect(204);
+
+    const finalBlogs = await api.get('/api/blogs');
+    expect(finalBlogs.body).toHaveLength(blogs.body.length - 1);
+    expect(finalBlogs.body).not.toContain(rootBlog);
+  });
+
+  test('Delete not root blog got unathorized', async () => {
     const blogs = await api.get('/api/blogs');
     const randomIndex = Math.floor(Math.random() * blogs.body.length);
     const randomBlog = blogs.body[randomIndex];
 
     await api.delete(`/api/blogs/${randomBlog.id}`)
-      .expect(204);
-
-    const finalBlogs = await api.get('/api/blogs');
-    expect(finalBlogs.body).toHaveLength(blogs.body.length - 1);
-    expect(finalBlogs.body).not.toContain(randomBlog);
+      .set('Authorization', token)
+      .expect(401);
   });
 
   test('PUT test', async () => {
@@ -73,7 +107,10 @@ describe('Object props', () => {
 
   test('if dont have likes prop, then is zero', async () => {
     const blogWithoutLikes = { title: 'test', url: 'test', author: 'test' };
-    const result = await api.post('/api/blogs').send(blogWithoutLikes)
+    const result = await api
+      .post('/api/blogs')
+      .send(blogWithoutLikes)
+      .set('Authorization', token)
       .expect(201)
       .expect('Content-Type', /application\/json/);
     expect(result.body.likes).toBe(0);
@@ -81,7 +118,9 @@ describe('Object props', () => {
 
   test('if dont have title and url props, then state is 400', async () => {
     const blogIncompleted = { author: 'test', likes: 0 };
-    await api.post('/api/blogs').send(blogIncompleted)
+    await api.post('/api/blogs')
+      .send(blogIncompleted)
+      .set('Authorization', token)
       .expect(400);
   });
 
