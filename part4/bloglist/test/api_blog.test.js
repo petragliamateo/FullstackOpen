@@ -7,7 +7,7 @@ const Blog = require('../models/blog');
 const api = supertest(app);
 
 beforeEach(async () => {
-  // La aplicación se ejecuta en modo de prueba --> La colección de la DB es blogsTest
+  // La aplicación se ejecuta en modo de prueba --> La colección de la DB es tests
   await Blog.deleteMany({});
   const blogObject = initialBlogs.map((b) => new Blog(b));
   const promiseArray = blogObject.map((blog) => blog.save());
