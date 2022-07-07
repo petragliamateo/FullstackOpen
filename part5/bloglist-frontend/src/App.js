@@ -4,6 +4,8 @@ import Login from './components/Login'
 import login from './services/login'
 import blogService from './services/blogs'
 import CreateBlog from './components/CreateBlog'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +16,7 @@ const App = () => {
   const [newBlog, setNewBlog] = useState({
     title: '', author: '', url: '',
   })
+  const [notification, setNotification] = useState({msg: '', isError: false});
 
   useEffect(() => {
     const blogsappUser = localStorage.getItem('blogsappUser');
@@ -35,7 +38,9 @@ const App = () => {
       setCredentials({username: '', password: ''});
       localStorage.setItem('blogsappUser', JSON.stringify(user));
       blogService.setToken(user.token);
-    } catch {}
+    } catch {
+      showNotification('wrong username or password', true)
+    }
   }
   const handleLogout = () => {
     localStorage.removeItem('blogsappUser');
@@ -46,6 +51,14 @@ const App = () => {
     console.log(newBlog);
     const data = await blogService.postBlog(newBlog);
     setBlogs((prev) => prev.concat(data));
+    showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
+    setNewBlog({ title: '', author: '', url: '' })
+  }
+  const showNotification = (msg, isError = false, ms = 3000) => {
+    setNotification(() => ({ msg, isError }))
+    setTimeout(() => {
+      setNotification({ msg: '', isError: false })
+    }, ms)
   }
 
   return (
@@ -53,6 +66,7 @@ const App = () => {
       {user.username ? (
         <div>
           <h2>blogs</h2>
+          <Notification notification={notification} />
           <div>
             <label>{user.username} logged in</label>
             <button onClick={handleLogout}>logout</button>
@@ -64,9 +78,14 @@ const App = () => {
           )}          
         </div>
       ) : (
-        <Login
-          handleSubmit={handleLogin} credentials={credentials} setCredentials={setCredentials}
-        />
+        <div>
+          <h2>log in to application</h2>
+          <Notification notification={notification} />
+          <Login
+            handleSubmit={handleLogin} credentials={credentials} setCredentials={setCredentials}
+          />          
+        </div>
+
       )}
 
     </div>
