@@ -7,6 +7,7 @@ import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
 import './index.css'
 import Togglable from './components/Toggleable'
+import BlogContainer from './containers/BlogContainer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -23,11 +24,7 @@ const App = () => {
     if (blogsappUser) {
       setUser(() => JSON.parse(blogsappUser));
       blogService.setToken(JSON.parse(blogsappUser).token);
-    }
-
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    } 
   }, [])
 
   const handleLogin = async (event) => {
@@ -53,16 +50,6 @@ const App = () => {
       setNotification({ msg: '', isError: false })
     }, ms)
   }
-  const handleLike = async (blog) => {
-    const likedBlog = {
-      ...blog, likes: blog.likes + 1,
-    }
-    const data = await blogService.putBlog(likedBlog);
-    console.log(data);
-    const newBlogs = [...blogs];
-    newBlogs[newBlogs.indexOf(blog)] = likedBlog; 
-    setBlogs(newBlogs)
-  }
 
   return (
     <div>
@@ -86,13 +73,8 @@ const App = () => {
             />
           </Togglable>
 
-          {blogs.map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              handleLike={handleLike}
-            />
-          )}          
+          <BlogContainer blogs={blogs} setBlogs={setBlogs} />
+
         </div>
       ) : (
         <div>
@@ -109,4 +91,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
