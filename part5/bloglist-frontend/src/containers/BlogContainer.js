@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import blogService from "../services/blogs"
 import Blog from "../components/Blog"
 
-const BlogContainer = ({ blogs, setBlogs }) => {
+const BlogContainer = ({ blogs, setBlogs, username }) => {
   useEffect(() => {
     const fetchData = async () =>{
       const blogsL = await blogService.getAll();
@@ -23,6 +23,14 @@ const BlogContainer = ({ blogs, setBlogs }) => {
     newBlogs.sort((a, b) => b.likes - a.likes);
     setBlogs(newBlogs)
   }
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      const data = await blogService.deleteBlog(blog.id);
+      console.log(data);
+      const newBlogs = blogs.filter((b) => b.id !== blog.id);
+      setBlogs(newBlogs);
+    }
+  }
 
   return (
     <div>
@@ -31,6 +39,8 @@ const BlogContainer = ({ blogs, setBlogs }) => {
           key={blog.id}
           blog={blog}
           handleLike={handleLike}
+          username={username}
+          handleDelete={handleDelete}
         />
       )} 
     </div>

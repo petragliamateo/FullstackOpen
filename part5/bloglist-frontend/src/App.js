@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import Login from './components/Login'
 import login from './services/login'
 import blogService from './services/blogs'
@@ -66,14 +65,14 @@ const App = () => {
 
           <Togglable buttonLabel={'new note'} ref={createBlogRef}>
             <CreateBlog
-              postBlog={blogService.postBlog}
+              blogService={blogService}
               setBlogs={setBlogs}
               showNotification={showNotification}
               toggleVisibility={() => createBlogRef.current.toggleVisibility()}
             />
           </Togglable>
 
-          <BlogContainer blogs={blogs} setBlogs={setBlogs} />
+          <BlogContainer blogs={blogs} setBlogs={setBlogs} username={user.username} />
 
         </div>
       ) : (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const CreateBlog = ({ postBlog, setBlogs, showNotification, toggleVisibility }) => {
+const CreateBlog = ({ blogService, setBlogs, showNotification, toggleVisibility }) => {
   const fields = ['title', 'author', 'url']
   const [newBlog, setNewBlog] = useState({
     title: '', author: '', url: '',
@@ -8,8 +8,9 @@ const CreateBlog = ({ postBlog, setBlogs, showNotification, toggleVisibility }) 
 
   const createBlog = async (event) => {
     event.preventDefault();
-    const data = await postBlog(newBlog);
-    setBlogs((prev) => prev.concat(data));
+    await blogService.postBlog(newBlog);
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
     showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
     setNewBlog({ title: '', author: '', url: '' })
     toggleVisibility();
