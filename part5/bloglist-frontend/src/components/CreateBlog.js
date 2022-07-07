@@ -8,8 +8,6 @@ const CreateBlog = ({ postBlog, setBlogs, showNotification, toggleVisibility }) 
 
   const createBlog = async (event) => {
     event.preventDefault();
-    console.log(event)
-    console.log(newBlog);
     const data = await postBlog(newBlog);
     setBlogs((prev) => prev.concat(data));
     showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
