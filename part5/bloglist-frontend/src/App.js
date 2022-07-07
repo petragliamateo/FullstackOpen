@@ -14,9 +14,6 @@ const App = () => {
   const [credentials, setCredentials] = useState({
     username: '', password: '',
   })
-  const [newBlog, setNewBlog] = useState({
-    title: '', author: '', url: '',
-  })
   const [notification, setNotification] = useState({msg: '', isError: false});
 
   const createBlogRef = useRef();
@@ -49,15 +46,7 @@ const App = () => {
     localStorage.removeItem('blogsappUser');
     setUser({})
   }
-  const createBlog = async (event) => {
-    event.preventDefault();
-    console.log(newBlog);
-    const data = await blogService.postBlog(newBlog);
-    setBlogs((prev) => prev.concat(data));
-    showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
-    setNewBlog({ title: '', author: '', url: '' })
-    createBlogRef.current.toggleVisibility();
-  }
+
   const showNotification = (msg, isError = false, ms = 3000) => {
     setNotification(() => ({ msg, isError }))
     setTimeout(() => {
@@ -79,7 +68,12 @@ const App = () => {
           <br />
 
           <Togglable buttonLabel={'new note'} ref={createBlogRef}>
-            <CreateBlog newBlog={newBlog} setNewBlog={setNewBlog} handleSubmit={createBlog} />
+            <CreateBlog
+              postBlog={blogService.postBlog}
+              setBlogs={setBlogs}
+              showNotification={showNotification}
+              toggleVisibility={() => createBlogRef.current.toggleVisibility()}
+            />
           </Togglable>
 
           {blogs.map(blog =>

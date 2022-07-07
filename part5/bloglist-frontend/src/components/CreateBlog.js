@@ -1,11 +1,26 @@
-import React from 'react'
+import { useState } from 'react'
 
-const CreateBlog = ({ newBlog, setNewBlog, handleSubmit }) => {
+const CreateBlog = ({ postBlog, setBlogs, showNotification, toggleVisibility }) => {
   const fields = ['title', 'author', 'url']
+  const [newBlog, setNewBlog] = useState({
+    title: '', author: '', url: '',
+  })
+
+  const createBlog = async (event) => {
+    event.preventDefault();
+    console.log(event)
+    console.log(newBlog);
+    const data = await postBlog(newBlog);
+    setBlogs((prev) => prev.concat(data));
+    showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
+    setNewBlog({ title: '', author: '', url: '' })
+    toggleVisibility();
+  }
+
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={createBlog}>
         {fields.map((name) => (
           <div key={name}>
             <label id={name}>{name}</label>
