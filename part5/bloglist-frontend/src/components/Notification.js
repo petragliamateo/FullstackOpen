@@ -1,5 +1,7 @@
+/* eslint-disable react/forbid-prop-types */
+import propTypes from 'prop-types';
 
-const Notification = ({ notification }) => {
+function Notification({ notification }) {
   const { msg, isError } = notification;
   if (!msg) {
     return null;
@@ -8,7 +10,11 @@ const Notification = ({ notification }) => {
     <div className={isError ? 'notificationError' : 'notification'}>
       {msg}
     </div>
-  )
+  );
 }
 
 export default Notification;
+
+Notification.propTypes = {
+  notification: propTypes.object.isRequired,
+};
