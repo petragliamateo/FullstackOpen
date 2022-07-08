@@ -1,36 +1,50 @@
-import { useState } from "react";
+/* eslint-disable react/forbid-prop-types */
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Blog = ({ blog, handleLike, username, handleDelete }) => {
+function Blog({
+  blog, handleLike, username, handleDelete,
+}) {
   const [visible, setVisible] = useState(false);
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  };
 
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author}
-        <button onClick={() => setVisible((prev) => !prev)}>
+        {`${blog.title} ${blog.author}`}
+        <button type="submit" onClick={() => setVisible((prev) => !prev)}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
       {visible && (
         <div>
-          {blog.url}<br />
+          {blog.url}
+          <br />
           {`likes: ${blog.likes}`}
-          <button onClick={() => handleLike(blog)}>like</button><br />
-          {blog.user.name} <br />
+          <button type="submit" onClick={() => handleLike(blog)}>like</button>
+          <br />
+          {blog.user.name}
+          <br />
           {blog.user.username === username && (
-            <button onClick={() => handleDelete(blog)}>remove</button>
+            <button type="submit" onClick={() => handleDelete(blog)}>remove</button>
           )}
         </div>
       )}
-    </div>  
-  )
+    </div>
+  );
 }
 
 export default Blog;
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+};

@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
-import Login from './components/Login'
-import login from './services/login'
-import blogService from './services/blogs'
-import CreateBlog from './components/CreateBlog'
-import Notification from './components/Notification'
-import './index.css'
-import Togglable from './components/Toggleable'
-import BlogContainer from './containers/BlogContainer'
+import { useState, useEffect, useRef } from 'react';
+import Login from './components/Login';
+import login from './services/login';
+import blogService from './services/blogs';
+import CreateBlog from './components/CreateBlog';
+import Notification from './components/Notification';
+import './index.css';
+import Togglable from './components/Toggleable';
+import BlogContainer from './containers/BlogContainer';
 
-const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState({})
+function App() {
+  const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState({});
   const [credentials, setCredentials] = useState({
     username: '', password: '',
-  })
-  const [notification, setNotification] = useState({msg: '', isError: false});
+  });
+  const [notification, setNotification] = useState({ msg: '', isError: false });
 
   const createBlogRef = useRef();
 
@@ -23,32 +23,31 @@ const App = () => {
     if (blogsappUser) {
       setUser(() => JSON.parse(blogsappUser));
       blogService.setToken(JSON.parse(blogsappUser).token);
-    } 
-  }, [])
+    }
+  }, []);
 
+  const showNotification = (msg, isError = false, ms = 3000) => {
+    setNotification(() => ({ msg, isError }));
+    setTimeout(() => {
+      setNotification({ msg: '', isError: false });
+    }, ms);
+  };
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await login(credentials);
-      setUser(user);
-      setCredentials({username: '', password: ''});
-      localStorage.setItem('blogsappUser', JSON.stringify(user));
-      blogService.setToken(user.token);
+      const userNew = await login(credentials);
+      setUser(userNew);
+      setCredentials({ username: '', password: '' });
+      localStorage.setItem('blogsappUser', JSON.stringify(userNew));
+      blogService.setToken(userNew.token);
     } catch {
-      showNotification('wrong username or password', true)
+      showNotification('wrong username or password', true);
     }
-  }
+  };
   const handleLogout = () => {
     localStorage.removeItem('blogsappUser');
-    setUser({})
-  }
-
-  const showNotification = (msg, isError = false, ms = 3000) => {
-    setNotification(() => ({ msg, isError }))
-    setTimeout(() => {
-      setNotification({ msg: '', isError: false })
-    }, ms)
-  }
+    setUser({});
+  };
 
   return (
     <div>
@@ -57,13 +56,13 @@ const App = () => {
           <h2>blogs</h2>
           <Notification notification={notification} />
           <div>
-            <label>{user.username} logged in</label>
-            <button onClick={handleLogout}>logout</button>
+            {`${user.username} logged in`}
+            <button type="submit" onClick={handleLogout}>logout</button>
           </div>
 
           <br />
 
-          <Togglable buttonLabel={'new note'} ref={createBlogRef}>
+          <Togglable buttonLabel="new note" ref={createBlogRef}>
             <CreateBlog
               blogService={blogService}
               setBlogs={setBlogs}
@@ -80,14 +79,16 @@ const App = () => {
           <h2>log in to application</h2>
           <Notification notification={notification} />
           <Login
-            handleSubmit={handleLogin} credentials={credentials} setCredentials={setCredentials}
-          />          
+            handleSubmit={handleLogin}
+            credentials={credentials}
+            setCredentials={setCredentials}
+          />
         </div>
 
       )}
 
     </div>
-  )
+  );
 }
 
 export default App;
