@@ -15,7 +15,7 @@ function Blog({
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blogDiv">
       <div>
         {`${blog.title} ${blog.author}`}
         <button type="submit" onClick={() => setVisible((prev) => !prev)}>
