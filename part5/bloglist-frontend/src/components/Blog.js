@@ -18,7 +18,7 @@ function Blog({
     <div style={blogStyle} className="blogDiv">
       <div>
         {`${blog.title} ${blog.author}`}
-        <button type="submit" onClick={() => setVisible((prev) => !prev)}>
+        <button type="submit" className="viewButton" onClick={() => setVisible((prev) => !prev)}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
@@ -27,7 +27,7 @@ function Blog({
           {blog.url}
           <br />
           {`likes: ${blog.likes}`}
-          <button type="submit" onClick={() => handleLike(blog)}>like</button>
+          <button type="submit" className="likeButton" onClick={() => handleLike(blog)}>like</button>
           <br />
           {blog.user.name}
           <br />

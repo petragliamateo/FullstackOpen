@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/forbid-prop-types */
 import { useState } from 'react';
 import propTypes from 'prop-types';
 
 function CreateBlog({
-  blogService, setBlogs, showNotification, toggleVisibility,
+  blogService, setBlogs, showNotification, toggleVisibility, handleSubmit,
 }) {
   const fields = ['title', 'author', 'url'];
   const [newBlog, setNewBlog] = useState({
@@ -11,6 +12,10 @@ function CreateBlog({
   });
 
   const createBlog = async (event) => {
+    if (handleSubmit) {
+      handleSubmit(newBlog);
+      return;
+    }
     event.preventDefault();
     await blogService.postBlog(newBlog);
     const blogs = await blogService.getAll();
@@ -29,6 +34,7 @@ function CreateBlog({
             {name}
             <input
               type="text"
+              id={name}
               name={name}
               value={newBlog[name]}
               onChange={({ target }) => setNewBlog((prev) => ({ ...prev, [name]: target.value }))}
