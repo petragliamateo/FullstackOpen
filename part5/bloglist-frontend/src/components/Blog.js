@@ -23,7 +23,7 @@ function Blog({
         </button>
       </div>
       {visible && (
-        <div>
+        <div className="blogVisible">
           {blog.url}
           <br />
           {`likes: ${blog.likes}`}
