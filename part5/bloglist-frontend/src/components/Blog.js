@@ -32,7 +32,7 @@ function Blog({
           {blog.user.name}
           <br />
           {blog.user.username === username && (
-            <button type="submit" onClick={() => handleDelete(blog)}>remove</button>
+            <button type="submit" className="removeButton" onClick={() => handleDelete(blog)}>remove</button>
           )}
         </div>
       )}

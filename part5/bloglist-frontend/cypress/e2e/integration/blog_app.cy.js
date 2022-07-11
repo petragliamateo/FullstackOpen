@@ -71,5 +71,12 @@ describe('Blog app', () => {
       cy.get('.likeButton').click();
       cy.contains('likes: 1');
     });
+
+    it('A blog can be removed', () => {
+      cy.get('.blogDiv').parent().find('button').as('viewButton');
+      cy.get('@viewButton').click();
+      cy.get('.removeButton').click();
+      cy.get('html').should('not.contain', 'title of blog author of blog');
+    });
   });
 });
