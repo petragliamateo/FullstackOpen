@@ -29,6 +29,14 @@ const reducer = (state = initialState, action) => {
       ));
       return newState;
 
+    case 'CREATE':
+      const newAnecdote = {
+        content: action.data.value,
+        id: getId(),
+        votes: 0,
+      };
+      return state.concat(newAnecdote);
+
     default:
       break;
   }
