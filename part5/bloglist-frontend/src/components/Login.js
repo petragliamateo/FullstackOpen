@@ -8,6 +8,7 @@ function Login({ handleSubmit, credentials, setCredentials }) {
         <div>
           username
           <input
+            id="usernameInput"
             type="text"
             name="username"
             value={credentials.username}
@@ -19,6 +20,7 @@ function Login({ handleSubmit, credentials, setCredentials }) {
         <div>
           password
           <input
+            id="passwordInput"
             type="password"
             name="password"
             value={credentials.password}
@@ -27,7 +29,7 @@ function Login({ handleSubmit, credentials, setCredentials }) {
             }
           />
         </div>
-        <button type="submit">login</button>
+        <button id="loginButton" type="submit">login</button>
       </form>
     </div>
   );
