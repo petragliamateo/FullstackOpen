@@ -30,7 +30,7 @@ describe('Blog app', () => {
     });
   });
 
-  describe.only('When logged in', () => {
+  describe('When logged in', () => {
     beforeEach(() => {
       cy.get('#usernameInput').type('rootUser');
       cy.get('#passwordInput').type('1234');
@@ -48,6 +48,28 @@ describe('Blog app', () => {
       cy.contains('title of blog author of blog').parent().find('button').as('viewButton');
       cy.get('@viewButton').click();
       cy.contains('url of blog');
+    });
+  });
+
+  describe.only('When logged in and created a blog', () => {
+    beforeEach(() => {
+      cy.get('#usernameInput').type('rootUser');
+      cy.get('#passwordInput').type('1234');
+      cy.get('#loginButton').click();
+      cy.contains('rootUser logged in');
+      cy.contains('new note').click();
+      cy.get('#title').type('title of blog');
+      cy.get('#author').type('author of blog');
+      cy.get('#url').type('url of blog');
+      cy.get('#createButton').click();
+    });
+
+    it('A blog can be liked', () => {
+      cy.get('.blogDiv').parent().find('button').as('viewButton');
+      cy.get('@viewButton').click();
+      cy.contains('likes: 0');
+      cy.get('.likeButton').click();
+      cy.contains('likes: 1');
     });
   });
 });
