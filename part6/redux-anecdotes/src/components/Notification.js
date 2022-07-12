@@ -8,12 +8,12 @@ const Notification = () => {
     borderWidth: 1
   }
 
-  if (!notification) {
+  if (!notification.notification) {
     return null
   }
   return (
     <div style={style}>
-      {notification}
+      {notification.notification}
     </div>
   )
 }
