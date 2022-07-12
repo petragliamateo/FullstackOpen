@@ -1,37 +1,48 @@
+import { getAll, postAnecdote } from "../services/anecdoteService"
+
 const initialState = []
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 export const voteAnecdote = (id) => {
   return {
-    type: 'VOTE',
+    type: 'VOTE_ANECDOTE',
     data: {
       id: id
     }
   }
 }
 
-export const createAnecdote = (value) => {
-  return {
-    type: 'CREATE',
-    data: {
-      content: value,
-      id: getId(),
-      votes: 0,
-    }
+export const createAnecdote = (content) => {
+  const newAnecdote = {content, id: getId(), votes: 0}
+  return async (dispatchEvent) => {
+    await postAnecdote(newAnecdote);
+    dispatchEvent({
+      type: 'CREATE_ANECDOTE',
+      data: newAnecdote,
+    })
+  } 
+}
+
+// export const initData = (data) => ({ type: 'INIT_ANECDOTES', data })
+export const initData = () => {
+  return async (dispatchEvent) => {
+    const data = await getAll()
+    dispatchEvent({
+      type: 'INIT_ANECDOTES',
+      data: data,
+    })
   }
 }
 
-export const initData = (data) => ({ type: 'INIT_ANECDOTES', data })
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'VOTE':
+    case 'VOTE_ANECDOTE':
       const newState = state.map((a) => (
         a.id === action.data.id ? {...a, votes: a.votes + 1} : a
       ));
       return newState;
 
-    case 'CREATE':
+    case 'CREATE_ANECDOTE':
       return state.concat(action.data);
 
     case 'INIT_ANECDOTES':
