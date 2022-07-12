@@ -9,7 +9,7 @@ export const notification = (text) => {
   }
 }
 
-export const removeNotification =  async () => ({ type: 'REMOVE' })
+export const removeNotification =  () => ({ type: 'REMOVE' })
 
 const notificationReducer = (state = initialState, { type, payload }) => {
   console.log('notification');
