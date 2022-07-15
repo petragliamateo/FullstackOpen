@@ -2,7 +2,6 @@
 const initialState = {
   blogs: [],
   user: {},
-  credentials: [],
   notification: {},
 };
 

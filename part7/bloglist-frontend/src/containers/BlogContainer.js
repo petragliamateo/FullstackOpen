@@ -2,18 +2,24 @@
 /* eslint-disable react/forbid-prop-types */
 import { useEffect } from 'react';
 import propTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux/es/exports';
+
 import blogService from '../services/blogs';
 import Blog from '../components/Blog';
+import { setItem } from '../reducer/appReducer';
 
-function BlogContainer({ blogs, setBlogs, username }) {
+function BlogContainer({ username }) {
+  const blogs = useSelector((st) => st.blogs);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchData = async () => {
       const blogsL = await blogService.getAll();
       blogsL.sort((a, b) => b.likes - a.likes);
-      setBlogs(blogsL);
+      dispatch(setItem('blogs', blogsL));
     };
     fetchData();
-  }, [setBlogs]);
+  }, []);
 
   const handleLike = async (blog) => {
     const likedBlog = {
@@ -23,13 +29,13 @@ function BlogContainer({ blogs, setBlogs, username }) {
     const newBlogs = [...blogs];
     newBlogs[newBlogs.indexOf(blog)] = likedBlog;
     newBlogs.sort((a, b) => b.likes - a.likes);
-    setBlogs(newBlogs);
+    dispatch(setItem('blogs', newBlogs));
   };
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.deleteBlog(blog.id);
       const newBlogs = blogs.filter((b) => b.id !== blog.id);
-      setBlogs(newBlogs);
+      dispatch(setItem('blogs', newBlogs));
     }
   };
 
@@ -51,7 +57,5 @@ function BlogContainer({ blogs, setBlogs, username }) {
 export default BlogContainer;
 
 BlogContainer.propTypes = {
-  blogs: propTypes.array.isRequired,
-  setBlogs: propTypes.func.isRequired,
   username: propTypes.string.isRequired,
 };

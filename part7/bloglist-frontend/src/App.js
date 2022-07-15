@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Login from './components/Login';
@@ -14,11 +14,11 @@ import { setItem } from './reducer/appReducer';
 
 function App() {
   const { user, notification } = useSelector((st) => st);
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   // const [user, setUser] = useState({});
-  const [credentials, setCredentials] = useState({
-    username: '', password: '',
-  });
+  // const [credentials, setCredentials] = useState({
+  //   username: '', password: '',
+  // });
   // const [notification, setNotification] = useState({ msg: '', isError: false });
 
   const dispatch = useDispatch();
@@ -43,10 +43,16 @@ function App() {
   };
   const handleLogin = async (event) => {
     event.preventDefault();
+    const { username, password } = event.target;
+    const credentials = {
+      username: username.value,
+      password: password.value,
+    };
     try {
       const userNew = await login(credentials);
       dispatch(setItem('user', userNew));
-      setCredentials({ username: '', password: '' });
+      username.value = '';
+      password.value = '';
       localStorage.setItem('blogsappUser', JSON.stringify(userNew));
       blogService.setToken(userNew.token);
     } catch {
@@ -71,16 +77,15 @@ function App() {
 
           <br />
 
-          <Togglable buttonLabel="new note" ref={createBlogRef}>
+          <Togglable buttonLabel="new blog" ref={createBlogRef}>
             <CreateBlog
               blogService={blogService}
-              setBlogs={setBlogs}
               showNotification={showNotification}
               toggleVisibility={() => createBlogRef.current.toggleVisibility()}
             />
           </Togglable>
 
-          <BlogContainer blogs={blogs} setBlogs={setBlogs} username={user.username} />
+          <BlogContainer username={user.username} />
 
         </div>
       ) : (
@@ -89,8 +94,6 @@ function App() {
           <Notification notification={notification} />
           <Login
             handleSubmit={handleLogin}
-            credentials={credentials}
-            setCredentials={setCredentials}
           />
         </div>
 

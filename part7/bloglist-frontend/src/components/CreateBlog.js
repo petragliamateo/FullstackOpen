@@ -1,17 +1,24 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/forbid-prop-types */
-import { useState } from 'react';
 import propTypes from 'prop-types';
+import { useDispatch } from 'react-redux/es/exports';
+import { setItem } from '../reducer/appReducer';
 
 function CreateBlog({
-  blogService, setBlogs, showNotification, toggleVisibility, handleSubmit,
+  blogService, showNotification, toggleVisibility, handleSubmit,
 }) {
   const fields = ['title', 'author', 'url'];
-  const [newBlog, setNewBlog] = useState({
-    title: '', author: '', url: '',
-  });
+
+  const dispatch = useDispatch();
 
   const createBlog = async (event) => {
+    const { title, author, url } = event.target;
+    const newBlog = {
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    };
     if (handleSubmit) {
       handleSubmit(newBlog);
       return;
@@ -19,9 +26,11 @@ function CreateBlog({
     event.preventDefault();
     await blogService.postBlog(newBlog);
     const blogs = await blogService.getAll();
-    setBlogs(blogs);
+    dispatch(setItem('blogs', blogs));
     showNotification(`a new blog ${newBlog.title} by ${newBlog.author}`);
-    setNewBlog({ title: '', author: '', url: '' });
+    title.value = '';
+    author.value = '';
+    url.value = '';
     toggleVisibility();
   };
 
@@ -32,13 +41,7 @@ function CreateBlog({
         {fields.map((name) => (
           <div key={name}>
             {name}
-            <input
-              type="text"
-              id={name}
-              name={name}
-              value={newBlog[name]}
-              onChange={({ target }) => setNewBlog((prev) => ({ ...prev, [name]: target.value }))}
-            />
+            <input name={name} />
           </div>
         ))}
         <button id="createButton" type="submit">create</button>
@@ -51,7 +54,6 @@ export default CreateBlog;
 
 CreateBlog.propTypes = {
   blogService: propTypes.object.isRequired,
-  setBlogs: propTypes.func.isRequired,
   showNotification: propTypes.func.isRequired,
   toggleVisibility: propTypes.func.isRequired,
 };

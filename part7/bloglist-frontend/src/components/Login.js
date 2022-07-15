@@ -1,33 +1,17 @@
 /* eslint-disable react/forbid-prop-types */
 import propTypes from 'prop-types';
 
-function Login({ handleSubmit, credentials, setCredentials }) {
+function Login({ handleSubmit }) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div>
           username
-          <input
-            id="usernameInput"
-            type="text"
-            name="username"
-            value={credentials.username}
-            onChange={
-              ({ target }) => setCredentials((prev) => ({ ...prev, username: target.value }))
-            }
-          />
+          <input name="username" />
         </div>
         <div>
           password
-          <input
-            id="passwordInput"
-            type="password"
-            name="password"
-            value={credentials.password}
-            onChange={
-              ({ target }) => setCredentials((prev) => ({ ...prev, password: target.value }))
-            }
-          />
+          <input name="password" />
         </div>
         <button id="loginButton" type="submit">login</button>
       </form>
@@ -39,6 +23,4 @@ export default Login;
 
 Login.propTypes = {
   handleSubmit: propTypes.func.isRequired,
-  credentials: propTypes.object.isRequired,
-  setCredentials: propTypes.func.isRequired,
 };
