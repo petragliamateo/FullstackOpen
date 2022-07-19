@@ -11,7 +11,7 @@ function Login({ handleSubmit }) {
         </div>
         <div>
           password
-          <input name="password" />
+          <input name="password" type="password" />
         </div>
         <button id="loginButton" type="submit">login</button>
       </form>

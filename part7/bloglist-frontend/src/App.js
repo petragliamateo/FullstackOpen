@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Login from './components/Login';
@@ -11,31 +13,40 @@ import Togglable from './components/Toggleable';
 import BlogContainer from './containers/BlogContainer';
 
 import { setItem } from './reducer/appReducer';
+import Users from './containers/Users';
+
+function Main({ showNotification, username }) {
+  const createBlogRef = useRef();
+  if (!username) {
+    return null;
+  }
+  return (
+    <div>
+      <Togglable buttonLabel="new blog" ref={createBlogRef}>
+        <CreateBlog
+          blogService={blogService}
+          showNotification={showNotification}
+          toggleVisibility={() => createBlogRef.current.toggleVisibility()}
+        />
+      </Togglable>
+      <BlogContainer username={username} />
+    </div>
+  );
+}
 
 function App() {
   const { user, notification } = useSelector((st) => st);
-  // const [blogs, setBlogs] = useState([]);
-  // const [user, setUser] = useState({});
-  // const [credentials, setCredentials] = useState({
-  //   username: '', password: '',
-  // });
-  // const [notification, setNotification] = useState({ msg: '', isError: false });
-
   const dispatch = useDispatch();
-
-  const createBlogRef = useRef();
 
   useEffect(() => {
     const blogsappUser = localStorage.getItem('blogsappUser');
     if (blogsappUser) {
-      // setUser(() => JSON.parse(blogsappUser));
       dispatch(setItem('user', JSON.parse(blogsappUser)));
       blogService.setToken(JSON.parse(blogsappUser).token);
     }
   }, []);
 
   const showNotification = (msg, isError = false, ms = 3000) => {
-    // setNotification(() => ({ msg, isError }));
     dispatch(setItem('notification', { msg, isError }));
     setTimeout(() => {
       dispatch(setItem('notification', { msg: '', isError: false }));
@@ -74,19 +85,7 @@ function App() {
             {`${user.username} logged in`}
             <button type="submit" onClick={handleLogout}>logout</button>
           </div>
-
           <br />
-
-          <Togglable buttonLabel="new blog" ref={createBlogRef}>
-            <CreateBlog
-              blogService={blogService}
-              showNotification={showNotification}
-              toggleVisibility={() => createBlogRef.current.toggleVisibility()}
-            />
-          </Togglable>
-
-          <BlogContainer username={user.username} />
-
         </div>
       ) : (
         <div>
@@ -98,8 +97,15 @@ function App() {
         </div>
 
       )}
-
+      <Routes>
+        <Route
+          path="/"
+          element={<Main username={user.username} showNotification={showNotification} />}
+        />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </div>
+
   );
 }
 
