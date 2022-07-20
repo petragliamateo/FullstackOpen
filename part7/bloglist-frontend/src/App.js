@@ -41,12 +41,9 @@ function App() {
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const match = useMatch('/users/:id');
-  const userMatch = match.params.id
+  const userMatch = match
     ? users.find((u) => u.id === match.params.id)
     : null;
-
-  useEffect(() => {
-  }, []);
 
   useEffect(() => {
     const blogsappUser = localStorage.getItem('blogsappUser');

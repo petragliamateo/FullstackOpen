@@ -9,7 +9,6 @@ export const setItem = (item, value) => ({ type: 'SET_ITEM', payload: { [item]: 
 // setItem(user, [...])
 
 export default (state = initialState, { type, payload }) => {
-  console.log(state);
   switch (type) {
     case 'SET_ITEM':
       return { ...state, ...payload };

@@ -2,7 +2,6 @@
 import React from 'react';
 
 function UserMatch({ user }) {
-  console.log(user);
   if (!user) {
     return null;
   }
