@@ -1,17 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import userService from '../services/users';
+/* eslint-disable react/prop-types */
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-function Users() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      const datas = await userService.getAll();
-      setUsers(datas);
-    };
-    getData();
-  }, []);
-
+function Users({ users }) {
   return (
     <div>
       <h2>Users</h2>
@@ -23,7 +14,9 @@ function Users() {
           </tr>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.username}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.username}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}

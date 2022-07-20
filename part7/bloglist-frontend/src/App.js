@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Route, Routes, useMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Login from './components/Login';
@@ -11,6 +11,8 @@ import Notification from './components/Notification';
 import './index.css';
 import Togglable from './components/Toggleable';
 import BlogContainer from './containers/BlogContainer';
+import UserMatch from './containers/UserMatch';
+import userService from './services/users';
 
 import { setItem } from './reducer/appReducer';
 import Users from './containers/Users';
@@ -37,6 +39,14 @@ function Main({ showNotification, username }) {
 function App() {
   const { user, notification } = useSelector((st) => st);
   const dispatch = useDispatch();
+  const [users, setUsers] = useState([]);
+  const match = useMatch('/users/:id');
+  const userMatch = match.params.id
+    ? users.find((u) => u.id === match.params.id)
+    : null;
+
+  useEffect(() => {
+  }, []);
 
   useEffect(() => {
     const blogsappUser = localStorage.getItem('blogsappUser');
@@ -44,6 +54,12 @@ function App() {
       dispatch(setItem('user', JSON.parse(blogsappUser)));
       blogService.setToken(JSON.parse(blogsappUser).token);
     }
+
+    const getData = async () => {
+      const datas = await userService.getAll();
+      setUsers(datas);
+    };
+    getData();
   }, []);
 
   const showNotification = (msg, isError = false, ms = 3000) => {
@@ -102,7 +118,8 @@ function App() {
           path="/"
           element={<Main username={user.username} showNotification={showNotification} />}
         />
-        <Route path="/users" element={<Users />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/users/:id" element={<UserMatch user={userMatch} />} />
       </Routes>
     </div>
 
