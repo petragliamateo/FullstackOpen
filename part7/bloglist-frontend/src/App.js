@@ -1,48 +1,32 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Routes, useMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Login from './components/Login';
 import login from './services/login';
 import blogService from './services/blogs';
-import CreateBlog from './components/CreateBlog';
 import Notification from './components/Notification';
 import './index.css';
-import Togglable from './components/Toggleable';
-import BlogContainer from './containers/BlogContainer';
-import UserMatch from './containers/UserMatch';
+import UserMatch from './pages/UserMatch';
 import userService from './services/users';
+import Main from './pages/Main';
 
 import { setItem } from './reducer/appReducer';
-import Users from './containers/Users';
-
-function Main({ showNotification, username }) {
-  const createBlogRef = useRef();
-  if (!username) {
-    return null;
-  }
-  return (
-    <div>
-      <Togglable buttonLabel="new blog" ref={createBlogRef}>
-        <CreateBlog
-          blogService={blogService}
-          showNotification={showNotification}
-          toggleVisibility={() => createBlogRef.current.toggleVisibility()}
-        />
-      </Togglable>
-      <BlogContainer username={username} />
-    </div>
-  );
-}
+import Users from './pages/Users';
+import BlogMatch from './pages/BlogMatch';
 
 function App() {
-  const { user, notification } = useSelector((st) => st);
+  const { user, notification, blogs } = useSelector((st) => st);
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const match = useMatch('/users/:id');
   const userMatch = match
     ? users.find((u) => u.id === match.params.id)
+    : null;
+  const matchB = useMatch('/blogs/:id');
+  const blogMatch = matchB
+    ? blogs.find((u) => u.id === matchB.params.id)
     : null;
 
   useEffect(() => {
@@ -117,6 +101,7 @@ function App() {
         />
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:id" element={<UserMatch user={userMatch} />} />
+        <Route path="/blogs/:id" element={<BlogMatch blog={blogMatch} />} />
       </Routes>
     </div>
 
