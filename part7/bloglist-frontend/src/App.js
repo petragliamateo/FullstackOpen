@@ -15,6 +15,7 @@ import Main from './pages/Main';
 import { setItem } from './reducer/appReducer';
 import Users from './pages/Users';
 import BlogMatch from './pages/BlogMatch';
+import Navbar from './components/Navbar';
 
 function App() {
   const { user, notification, blogs } = useSelector((st) => st);
@@ -76,12 +77,9 @@ function App() {
     <div>
       {user.username ? (
         <div>
+          <Navbar username={user.username} handleLogout={handleLogout} />
           <h2>blogs</h2>
           <Notification notification={notification} />
-          <div>
-            {`${user.username} logged in`}
-            <button type="submit" onClick={handleLogout}>logout</button>
-          </div>
           <br />
         </div>
       ) : (
