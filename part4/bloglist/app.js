@@ -11,6 +11,7 @@ const blogRouter = require('./controllers/blogs');
 const userRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const testingRouter = require('./controllers/testing');
+const commentRouter = require('./controllers/comments');
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('connected!'))
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(tokenExtractor);
 // blogRouter usa json parse para el body
 app.use('/api/blogs', blogRouter);
+app.use('/api/blogs', commentRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 

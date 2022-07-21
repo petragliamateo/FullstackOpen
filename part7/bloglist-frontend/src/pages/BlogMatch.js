@@ -30,6 +30,12 @@ function BlogMatch({ blog }) {
       <p>{blog.url}</p>
       <p>{blog.likes} likes <button type="submit" onClick={handleLike}>Like</button></p>
       <p>added by {blog.author}</p>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((c) => (
+          <li key={c.id}>{c.content}</li>
+        ))}
+      </ul>
     </div>
   );
 }

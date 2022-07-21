@@ -1,0 +1,6 @@
+POST http://localhost:3003/api/blogs/62c586a084cee94371479998/comment HTTP/1.1
+content-type: application/json
+
+{
+    "content": "comentario 1"
+}
