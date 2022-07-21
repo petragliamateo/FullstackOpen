@@ -4,20 +4,19 @@ import { Link } from 'react-router-dom';
 
 function Users({ users }) {
   return (
-    <div>
-      <h2>Users</h2>
+    <div className="my-10">
       <table>
         <tbody>
           <tr>
-            <td />
-            <td>blogs created</td>
+            <td className="font-semibold"><p className="mx-4">Users</p></td>
+            <td className="font-semibold"><p className="mx-4">blogs created</p></td>
           </tr>
           {users.map((user) => (
             <tr key={user.id}>
               <td>
-                <Link to={`/users/${user.id}`}>{user.username}</Link>
+                <Link to={`/users/${user.id}`} className="text-blue-700 font-bold mx-4">{user.username}</Link>
               </td>
-              <td>{user.blogs.length}</td>
+              <td><p className="mx-4">{user.blogs.length}</p></td>
             </tr>
           ))}
         </tbody>

@@ -12,7 +12,7 @@ function Main({ showNotification, username }) {
     return null;
   }
   return (
-    <div>
+    <div className="flex flex-col items-center w-full">
       <Togglable buttonLabel="new blog" ref={createBlogRef}>
         <CreateBlog
           blogService={blogService}

@@ -34,19 +34,26 @@ function BlogMatch({ blog }) {
     return null;
   }
   return (
-    <div>
-      <h2>{blog.title}</h2>
-      <p>{blog.url}</p>
-      <p>{blog.likes} likes <button type="submit" onClick={handleLike}>Like</button></p>
+    <div className="flex flex-col items-center w-full my-10">
+      <h2 className="text-2xl font-semibold mb-5">{blog.title}</h2>
+      <a href={blog.url} className="text-blue-800 font-bold">{blog.url}</a>
+      <p className="font-semibold">{blog.likes} likes
+        <button
+          type="submit"
+          onClick={handleLike}
+          className="btn-primary my-2 mx-1"
+        >Like
+        </button>
+      </p>
       <p>added by {blog.author}</p>
-      <h3>comments</h3>
-      <form onSubmit={addComment}>
-        <input name="comment" />
-        <button type="submit">add comment</button>
+      <h3 className="text-2xl font-semibold my-3 bg-blue-300 w-full text-center p-2">Comments</h3>
+      <form onSubmit={addComment} className="bg-slate-500 rounded-xl">
+        <input name="comment" placeholder="comment.." className="bg-slate-500 mx-2" />
+        <button type="submit" className="btn-primary">add comment</button>
       </form>
-      <ul>
+      <ul className="w-full">
         {blog.comments.map((c) => (
-          <li key={c.id}>{c.content}</li>
+          <li key={c.id} className="border-2 border-black m-3">{c.content}</li>
         ))}
       </ul>
     </div>

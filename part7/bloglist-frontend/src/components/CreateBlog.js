@@ -36,15 +36,15 @@ function CreateBlog({
 
   return (
     <div>
-      <h2>create new</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={createBlog} className="form-basic m-8">
+        <h2 className="text-xl font-bold mb-2">create new</h2>
         {fields.map((name) => (
-          <div key={name}>
+          <div key={name} className="flex flex-col items-center">
             {name}
-            <input name={name} />
+            <input name={name} className="mb-2" />
           </div>
         ))}
-        <button id="createButton" type="submit">create</button>
+        <button id="createButton" type="submit" className="btn-primary mt-2">create</button>
       </form>
     </div>
   );

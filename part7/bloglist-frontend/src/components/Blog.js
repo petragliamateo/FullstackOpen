@@ -14,9 +14,14 @@ function Blog({
   };
 
   return (
-    <div style={blogStyle} className="blogDiv">
-      <Link to={`/blogs/${blog.id}`}>{`${blog.title} ${blog.author}`}</Link>
-    </div>
+    <Link to={`/blogs/${blog.id}`}>
+      <div
+        style={blogStyle}
+        className="blogDiv bg-blue-200 hover:bg-blue-300 transition-colors text-center font-semibold mx-8 mb-2"
+      >
+        {`${blog.title} ${blog.author}`}
+      </div>
+    </Link>
   );
 }
 

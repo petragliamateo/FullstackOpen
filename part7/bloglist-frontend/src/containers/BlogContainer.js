@@ -40,7 +40,7 @@ function BlogContainer({ username }) {
   };
 
   return (
-    <div>
+    <div className="w-full">
       {blogs.map((blog) => (
         <Blog
           key={blog.id}

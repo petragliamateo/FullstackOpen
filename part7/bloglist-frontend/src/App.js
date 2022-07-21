@@ -4,18 +4,18 @@ import { Route, Routes, useMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Login from './components/Login';
+import Navbar from './components/Navbar';
+import Notification from './components/Notification';
+
 import login from './services/login';
 import blogService from './services/blogs';
-import Notification from './components/Notification';
-import './index.css';
-import UserMatch from './pages/UserMatch';
 import userService from './services/users';
-import Main from './pages/Main';
-
 import { setItem } from './reducer/appReducer';
+
+import Main from './pages/Main';
 import Users from './pages/Users';
+import UserMatch from './pages/UserMatch';
 import BlogMatch from './pages/BlogMatch';
-import Navbar from './components/Navbar';
 
 function App() {
   const { user, notification, blogs } = useSelector((st) => st);
@@ -74,17 +74,15 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="bg-slate-300 flex flex-col items-center">
       {user.username ? (
-        <div>
+        <div className="w-full">
           <Navbar username={user.username} handleLogout={handleLogout} />
-          <h2>blogs</h2>
+          <h2 className="text-5xl font-bold m-5 text-center">Blogs app</h2>
           <Notification notification={notification} />
-          <br />
         </div>
       ) : (
         <div>
-          <h2>log in to application</h2>
           <Notification notification={notification} />
           <Login
             handleSubmit={handleLogin}
