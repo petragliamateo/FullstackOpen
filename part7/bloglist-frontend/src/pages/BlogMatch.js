@@ -21,6 +21,15 @@ function BlogMatch({ blog }) {
     dispatch(setItem('blogs', newBlogs));
   };
 
+  const addComment = async (event) => {
+    event.preventDefault();
+    const { comment } = event.target;
+    await blogService.postCommentBlog(blog.id, comment.value);
+    const refreshBlogs = await blogService.getAll();
+    dispatch(setItem('blogs', refreshBlogs));
+    comment.value = '';
+  };
+
   if (!blog) {
     return null;
   }
@@ -31,6 +40,10 @@ function BlogMatch({ blog }) {
       <p>{blog.likes} likes <button type="submit" onClick={handleLike}>Like</button></p>
       <p>added by {blog.author}</p>
       <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input name="comment" />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((c) => (
           <li key={c.id}>{c.content}</li>
