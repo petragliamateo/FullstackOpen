@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^3.10.1",
+    "dotenv": "^16.0.2",
+    "mongoose": "^6.6.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
