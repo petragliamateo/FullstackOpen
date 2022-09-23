@@ -52,7 +52,7 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
       if (!currentUser) {
-        // Si no se inicio sesion:
+        // Si no se inicio sesion (es decir, si la solicitud no lleva el header auth adecuado):
         throw new AuthenticationError('Usuario no autenticado')
       }
       let author = await Author.findOne({ name: args.author });
