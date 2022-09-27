@@ -20,6 +20,7 @@ query {
       bookCount
     }
     published
+    genres
   }
 }
 `
