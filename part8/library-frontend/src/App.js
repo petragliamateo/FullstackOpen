@@ -1,9 +1,10 @@
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
+import { GET_USER } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -15,6 +16,10 @@ const App = () => {
     localStorage.clear();
     client.resetStore();
   }
+  
+  const result = useQuery(GET_USER);
+  const user = result.loading ? {} : result.data.me;
+  console.log(user);
 
   useEffect(() => {
     if(!token) {
@@ -30,6 +35,7 @@ const App = () => {
         {token ? (
           <>
             <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={() => setPage('recommended')}>recommended</button>
             <button onClick={() => logout()}>logout</button>
           </>
         ) : (
@@ -41,6 +47,7 @@ const App = () => {
       <Books show={page === 'books'} />
       <NewBook show={page === 'add'} />
       <LoginForm show={page === 'login'} setToken={setToken} setPage={setPage} />
+      <Books show={page === 'recommended'} favoriteGenre={user.favoriteGenre} />
     </div>
   )
 }

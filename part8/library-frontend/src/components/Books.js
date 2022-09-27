@@ -2,16 +2,26 @@ import React from "react";
 import { useQuery } from "@apollo/client"
 import { ALL_BOOKS } from "../queries"
 
-const Books = (props) => {
+const Books = ({ show, favoriteGenre }) => {
   const [filtered, setFiltered] = React.useState([]);
   const result = useQuery(ALL_BOOKS);
   const books = result.loading ? [] : result.data.allBooks;
+
+  const setBooksFilter = (genre = '') => {
+    if (genre) {
+      return setFiltered(books.filter((b) => b.genres.includes(genre)));
+    }
+    return setFiltered(books);
+  }
   
   React.useEffect(() => {
-    setFiltered(books)
-  }, [books])
+    setFiltered(books);
+    if (favoriteGenre) {
+      setBooksFilter(favoriteGenre);
+    }
+  }, [result.data])
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
@@ -26,8 +36,14 @@ const Books = (props) => {
 
   return (
     <div>
-      <h2>books</h2>
-
+      {favoriteGenre ? (
+        <div>
+          <h2>recommendations</h2>
+          <p>books in your favorite genre <strong>{favoriteGenre}</strong></p>
+        </div>
+      ) : (
+        <h2>books</h2>
+      )}
       <table>
         <tbody>
           <tr>
@@ -44,18 +60,21 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
-      <div>
-        {genres.map((genre, i) => (
-          <button key={i} onClick={() => {
-            setFiltered(books.filter((b) => b.genres.includes(genre)));
-          }}>
-            {genre}
+
+      {!favoriteGenre &&
+        <div>
+          {genres.map((genre, i) => (
+            <button key={i} onClick={() => {
+              setBooksFilter(genre);
+            }}>
+              {genre}
+            </button>
+          ))}
+          <button onClick={() => setBooksFilter()}>
+            all genres
           </button>
-        ))}
-        <button onClick={() => setFiltered(books)}>
-          all genres
-        </button>
-      </div>
+        </div>
+      }
     </div>
   )
 }
