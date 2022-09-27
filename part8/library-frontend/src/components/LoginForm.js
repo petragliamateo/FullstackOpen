@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 
-const LoginForm = ({ setToken, show, setPage }) => {
+const LoginForm = ({ setToken, show, setPage, getUser }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -29,6 +29,7 @@ const LoginForm = ({ setToken, show, setPage }) => {
     await login({ variables: { username, password } })
 
     console.log('login...')
+    getUser();
     setPassword('')
     setUsername('')
   }

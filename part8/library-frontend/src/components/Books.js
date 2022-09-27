@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/client"
 import { ALL_BOOKS } from "../queries"
 
-const Books = ({ show, favoriteGenre }) => {
+const Books = ({ show }) => {
   const [filtered, setFiltered] = React.useState([]);
   const result = useQuery(ALL_BOOKS);
   const books = result.loading ? [] : result.data.allBooks;
@@ -13,12 +13,9 @@ const Books = ({ show, favoriteGenre }) => {
     }
     return setFiltered(books);
   }
-  
+
   React.useEffect(() => {
-    setFiltered(books);
-    if (favoriteGenre) {
-      setBooksFilter(favoriteGenre);
-    }
+    setBooksFilter();
   }, [result.data])
 
   if (!show) {
@@ -36,14 +33,7 @@ const Books = ({ show, favoriteGenre }) => {
 
   return (
     <div>
-      {favoriteGenre ? (
-        <div>
-          <h2>recommendations</h2>
-          <p>books in your favorite genre <strong>{favoriteGenre}</strong></p>
-        </div>
-      ) : (
-        <h2>books</h2>
-      )}
+      <h2>books</h2>
       <table>
         <tbody>
           <tr>
@@ -61,20 +51,18 @@ const Books = ({ show, favoriteGenre }) => {
         </tbody>
       </table>
 
-      {!favoriteGenre &&
-        <div>
-          {genres.map((genre, i) => (
-            <button key={i} onClick={() => {
-              setBooksFilter(genre);
-            }}>
-              {genre}
-            </button>
-          ))}
-          <button onClick={() => setBooksFilter()}>
-            all genres
+      <div>
+        {genres.map((genre, i) => (
+          <button key={i} onClick={() => {
+            setBooksFilter(genre);
+          }}>
+            {genre}
           </button>
-        </div>
-      }
+        ))}
+        <button onClick={() => setBooksFilter()}>
+          all genres
+        </button>
+      </div>
     </div>
   )
 }
