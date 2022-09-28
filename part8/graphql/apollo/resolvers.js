@@ -5,6 +5,10 @@ const Book = require('../models/book');
 const Author = require('../models/author');
 const User = require('../models/user');
 
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
+
 const resolvers = {
   Query: {
     bookCount: async () => await Book.count({}),
@@ -66,6 +70,7 @@ const resolvers = {
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args })
       }
+      pubsub.publish('BOOK_ADDED', { bookAdded: { ...args, author } });
       return { ...args, author };
     },
 
@@ -95,6 +100,11 @@ const resolvers = {
         id: user._id,
       }
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
     }
   }
 }
