@@ -5,7 +5,7 @@ import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommended from './components/Recommended'
-import { BOOK_ADDED, GET_USER } from './queries'
+import { ALL_BOOKS, BOOK_ADDED, GET_USER } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -20,11 +20,23 @@ const App = () => {
     setUser({});
   }
 
-  // Subscriptions:
+  // Subscriptions: funcion para actualizar cache y luego hook para suscripciones
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => 
+      set.map(b => b.title).includes(object.title)  
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+      })
+    }   
+  }
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      window.alert('Nuevo libro')
-      console.log(subscriptionData.data.bookAdded);
+      const addedBook = subscriptionData.data.bookAdded;
+      window.alert(`Nuevo libro: ${addedBook.title}`);
+      updateCacheWith(addedBook);
     }
   })
   

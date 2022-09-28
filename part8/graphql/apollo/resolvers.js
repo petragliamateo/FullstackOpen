@@ -60,18 +60,23 @@ const resolvers = {
         throw new AuthenticationError('Usuario no autenticado')
       }
       let author = await Author.findOne({ name: args.author });
+      let result  = {};
       try {
         if (!author) {
           const newAuthor = new Author({ name: args.author });
           author = await newAuthor.save();
         }
         const newBook = new Book({ ...args, author: author.id });
-        const result = await newBook.save();
+        result = await newBook.save();
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args })
       }
-      pubsub.publish('BOOK_ADDED', { bookAdded: { ...args, author } });
-      return { ...args, author };
+      const spreadResult = {...result};
+      const returnedValue = spreadResult._doc;
+      returnedValue.author = author;
+      console.log(returnedValue);
+      pubsub.publish('BOOK_ADDED', { bookAdded: returnedValue });
+      return returnedValue;
     },
 
     editAuthor: async (root, args, { currentUser }) => {
