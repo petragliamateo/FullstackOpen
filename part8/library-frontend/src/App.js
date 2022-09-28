@@ -1,11 +1,11 @@
-import { useApolloClient, useLazyQuery } from '@apollo/client'
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommended from './components/Recommended'
-import { GET_USER } from './queries'
+import { BOOK_ADDED, GET_USER } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -19,6 +19,14 @@ const App = () => {
     client.resetStore();
     setUser({});
   }
+
+  // Subscriptions:
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert('Nuevo libro')
+      console.log(subscriptionData.data.bookAdded);
+    }
+  })
   
   const [getUser, result] = useLazyQuery(GET_USER);
   const setterUser = async () => {
