@@ -22,6 +22,9 @@ const App = () => {
   
   const [getUser, result] = useLazyQuery(GET_USER);
   const setterUser = async () => {
+    if(user.username){
+      return;
+    }
     await getUser();
     if(result.data) {
       setUser(result.data.me || {})
@@ -29,6 +32,7 @@ const App = () => {
   }
 
   useEffect(() => {
+    console.log('app effect');
     setterUser();
     if(!token) {
       setToken(localStorage.getItem('user-token'));

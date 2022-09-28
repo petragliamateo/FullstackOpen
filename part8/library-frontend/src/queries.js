@@ -31,6 +31,8 @@ mutation($title: String!, $author: String!, $published: Int, $genres: [String]) 
     title
     author {
       name
+      born
+      bookCount
     }
     published
     genres

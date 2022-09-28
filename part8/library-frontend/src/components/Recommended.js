@@ -1,21 +1,20 @@
 import React from "react";
-import { useLazyQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { ALL_BOOKS } from "../queries"
 
 const Recommended = ({ show, favoriteGenre }) => {
   const [filtered, setFiltered] = React.useState([]);
-  const [getBooks, result] = useLazyQuery(ALL_BOOKS)
-  const showBooks = (favGenre) => {
-    getBooks({ variables: { genre: favGenre } })
-  }
+  const result = useQuery(ALL_BOOKS, { variables: { genre: favoriteGenre } })
+  const books = result.loading ? [] : result.data.allBooks;
   
   React.useEffect(() => {
     console.log('rec');
-    showBooks(favoriteGenre)
-    if (result.data) {
-      setFiltered(result.data.allBooks)
+    const reload = async () => {
+      await result.refetch({ genre: favoriteGenre })
+      setFiltered(books);
     }
-  }, [result.data])
+    reload();
+  }, [show])
 
   if (!show) {
     return null
