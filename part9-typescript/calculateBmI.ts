@@ -2,7 +2,6 @@
 
 const calculateBmi = (cm: number, kg: number): string => {
   const bmi = kg / ((cm / 100) ** 2);
-  
   switch (true) {
     case bmi <= 16.0:
       return 'Underweight (Severe thinness)';
@@ -26,5 +25,24 @@ const calculateBmi = (cm: number, kg: number): string => {
   }
 }
 
-console.log(calculateBmi(180, 74));
+interface admitedValues {
+  value1: number;
+  value2: number;
+}
+const parseArguments = (args: Array<string>): admitedValues => {
+  if (args.length !== 4) throw new Error('Number of arguments error');
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))){
+    return { value1: Number(args[2]), value2: Number(args[3]) };
+  } else{
+    throw new Error('Invalid arguments');
+  }
+}
+
+try {
+  const { value1, value2 } = parseArguments(process.argv);
+  console.log(calculateBmi(value1, value2));
+} catch (error) {
+  console.log('error: ', error);
+}
+
 

@@ -27,5 +27,28 @@ const exerciseCalculator = (trainned: Array<number>, target: number): Result => 
   return { periodLength, trainingDays, target, average, success, rating, ratingDescription };
 }
 
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2));
+interface exercisesValues {
+  target: number;
+  trainned: Array<number>;
+}
+const exerciseArguments = (args: Array<string>): exercisesValues => {
+  if (args.length <= 4) throw new Error('Number of arguments error');
+  const target = Number(args[2]);
+  const trainned = args.slice(3).map((v) => {
+    if (isNaN(Number(v))) throw new Error('Invalid arguments');
+    return Number(v);
+  });
+  if (!isNaN(target)){
+    return { target, trainned };
+  } else{
+    throw new Error('Invalid arguments');
+  }
+}
+
+try {
+  const { target, trainned } = exerciseArguments(process.argv);
+  console.log(exerciseCalculator(trainned, target));
+} catch (error) {
+  console.log('error: ', error);
+}
 
