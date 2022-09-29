@@ -10,7 +10,7 @@ interface Result {
 // Entrada de datos: [3, 0, 2, 4.5, 0, 3, 1] => 3 horas el lunes, 0 el martes, 2 el miercoles, etc..
 // target es el objetivo diario, p.e. target = 2 serian 2 horas promedio diarias
 
-const exerciseCalculator = (trainned: Array<number>, target: number): Result => {
+export const exerciseCalculator = (trainned: Array<number>, target: number): Result => {
   const periodLength = trainned.length;
   const trainingDays = trainned.filter((value) => value !== 0).length;
   // Hago sumatoria de todas las horas y divido segun la cantidad de dias:
@@ -31,7 +31,7 @@ interface exercisesValues {
   target: number;
   trainned: Array<number>;
 }
-const exerciseArguments = (args: Array<string>): exercisesValues => {
+export const exerciseArguments = (args: Array<string>): exercisesValues => {
   if (args.length <= 4) throw new Error('Number of arguments error');
   const target = Number(args[2]);
   const trainned = args.slice(3).map((v) => {
