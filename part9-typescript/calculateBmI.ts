@@ -23,7 +23,7 @@ export const calculateBmi = (cm: number, kg: number): string => {
     default:
       return 'Algo salio mal.';
   }
-}
+};
 
 interface admitedValues {
   value1: number;
@@ -36,7 +36,7 @@ const parseArguments = (args: Array<string>): admitedValues => {
   } else{
     throw new Error('Invalid arguments');
   }
-}
+};
 
 try {
   const { value1, value2 } = parseArguments(process.argv);

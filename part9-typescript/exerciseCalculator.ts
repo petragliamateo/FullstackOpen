@@ -25,7 +25,7 @@ const exerciseCalculator = (trainned: Array<number>, target: number): Result => 
   }
 
   return { periodLength, trainingDays, target, average, success, rating, ratingDescription };
-}
+};
 
 interface exercisesValues {
   target: number;
@@ -43,7 +43,7 @@ const exerciseArguments = (args: Array<string>): exercisesValues => {
   } else{
     throw new Error('Invalid arguments');
   }
-}
+};
 
 try {
   const { target, trainned } = exerciseArguments(process.argv);
