@@ -1,6 +1,6 @@
 // BMI = mass(kg) / height(m)**2
 
-const calculateBmi = (cm: number, kg: number): string => {
+export const calculateBmi = (cm: number, kg: number): string => {
   const bmi = kg / ((cm / 100) ** 2);
   switch (true) {
     case bmi <= 16.0:
